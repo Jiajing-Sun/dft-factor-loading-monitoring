@@ -1,0 +1,6 @@
+*.R text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+data/hpi_at_metro.csv -text
+reference/* -text
+*.rds binary

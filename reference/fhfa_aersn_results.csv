@@ -1,0 +1,3 @@
+"method","q","K","J","m","N","scheme","critical","calibration_B","evaluation_B","null_rate","null_lo","null_hi","stop_k","alarm_date","observed_max"
+"AERSN",6,3,1,40,405,"training_fitted_model",151.869381331095,2000,1000,0.058,0.0443328602528207,0.0743364953823517,11,"2007Q3",17345.6925149692
+"SSMS",6,3,1,40,405,"training_fitted_model",1777.40714234438,2000,1000,0.055,0.041698795079536,0.0709915155420575,12,"2007Q4",85860.3254079623

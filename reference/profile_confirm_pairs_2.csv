@@ -1,0 +1,13 @@
+"id","profile","dgp","scenario","scheme","difference","lo","hi","B"
+2,"front_cycle","Gaussian","oscillation","known_profile",0.171,0.152055181703955,0.189944818296045,2000
+2,"front_cycle","Gaussian","oscillation","size_adjusted",0.181,0.162648775110978,0.199351224889022,2000
+2,"front_cycle","Gaussian","reversal","known_profile",0.1325,0.113495186228925,0.151504813771075,2000
+2,"front_cycle","Gaussian","reversal","size_adjusted",0.0750000000000004,0.0570117680623105,0.0929882319376904,2000
+2,"front_cycle","Gaussian","pulse","known_profile",0.167,0.147735702312757,0.186264297687242,2000
+2,"front_cycle","Gaussian","pulse","size_adjusted",0.124,0.106051929189383,0.141948070810617,2000
+2,"front_cycle","Bounded","oscillation","known_profile",0.2115,0.192054163312363,0.230945836687637,2000
+2,"front_cycle","Bounded","oscillation","size_adjusted",0.1825,0.1635838728876,0.2014161271124,2000
+2,"front_cycle","Bounded","reversal","known_profile",0.0859999999999999,0.0681066199468944,0.103893380053105,2000
+2,"front_cycle","Bounded","reversal","size_adjusted",0.0234999999999999,0.00558816996989099,0.0414118300301088,2000
+2,"front_cycle","Bounded","pulse","known_profile",0.1435,0.125483332540307,0.161516667459693,2000
+2,"front_cycle","Bounded","pulse","size_adjusted",0.0909999999999999,0.0732081330247429,0.108791866975257,2000

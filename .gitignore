@@ -1,0 +1,9 @@
+.DS_Store
+._*
+.Rhistory
+.RData
+.Rproj.user/
+results/*
+!results/.gitkeep
+validation_q2/
+validation_q4/
