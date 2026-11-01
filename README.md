@@ -4,10 +4,9 @@ R replication materials for the paper by **Jiajing Sun, Yongmiao Hong and Meitin
 The entry point is run_all.R. The experiments cover the three-method comparison, training contamination, local power, detection delay and bandwidth sensitivity.
 
 The main method is affine-equivariant adjusted-range-based self-normalized
-monitoring (RSMS-AE, called RSMS in the main text). RSMS-LDL is the
-coordinate-based construction in the online appendix. SSMS is the quadratic
+monitoring (RSMS). SSMS is the quadratic
 self-normalized benchmark. **aersn is the R package name.** The historical
-array key AERSN denotes RSMS-AE; all manuscript-facing tables and plots use RSMS.
+array key AERSN denotes RSMS; all manuscript-facing tables and plots use RSMS.
 
 ## Run
 
@@ -50,7 +49,7 @@ All R scripts are at the top level. There are three single-level folders:
 | run_all.R | Execute the complete quick or full workflow |
 | install_dependencies.R, setup.R | Install/check packages and initialize paths/RNG |
 | monitoring_core.R | Exact q=2/q=4 increment-hull geometry and SSMS |
-| rsms_monitor.R | Public-API RSMS-AE and RSMS-LDL monitoring functions |
+| rsms_monitor.R | Compute the RSMS path using the public aersn API |
 | profile_run.R | q=2 study, profile index 1--5 |
 | profile_confirm.R | q=4 study, profile index 1--2 |
 | profile_confirm_summarize.R | Resample calibration and evaluation panels independently |
@@ -167,8 +166,7 @@ software or restricted-access data are required.
 
 The accelerated polygons/facets are checked against the exported
 aersn_hull/aersn_gauge linear-program implementation. A common invertible
-QR transformation conditions the gauge calculation without changing it;
-this is not the LDL construction. Numerical checks also verify affine
+QR transformation conditions the gauge calculation without changing it. Numerical checks also verify affine
 invariance, bootstrap intervals, the source data panel and FHFA alarm dates.
 See VALIDATION.md for checks actually performed for this release.
 

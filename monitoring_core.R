@@ -1,6 +1,6 @@
 # Monitoring geometry used by both Monte Carlo studies (gamma = 0).  AERSN is a
-# historical array key; it denotes affine-equivariant RSMS throughout.  No LDL
-# transformation and no ridge enter this affine statistic.  The increment hull is
+# historical array key; it denotes affine-equivariant RSMS throughout.  The calculation
+# uses the unregularized training path.  The increment hull is
 # conv{G_i - G_j}. Constructing it from the vertices of conv{G_i} gives the same set.
 # The 2D orientation is counterclockwise, so edge normals provide the gauge through
 # normalized supporting lines.

@@ -22,16 +22,6 @@ for (q in c(2L, 4L)) {
 }
 record("PASS: q=2/4 accelerated gauges equal public LP; affine invariance.")
 
-# Verify the appendix LDL quadratic form against the package normalizer.
-training <- psi[1:120, , drop = FALSE]
-obj <- aersn::aersn(colMeans(training), training)
-normalizer <- aersn::aersn_ldl_normalizer(obj)
-Z <- apply(sweep(psi[121:360, , drop = FALSE], 2, colMeans(training)), 2, cumsum) /
-  sqrt(120) / (1 + (1:240) / 120)
-expected_ldl <- rowSums((Z %*% solve(normalizer$matrix)) * Z)
-stopifnot(max(abs(rsms_monitor(psi, 120L, "ldl")$path - expected_ldl)) < 1e-8)
-record("PASS: appendix LDL statistic agrees with public package normalizer.")
-
 # Compare regenerated table values against the frozen replication outputs.
 for (id in 1:2) {
     new <- readRDS(file.path(OUTPUT, paste0("profile_confirm_raw_", id, ".rds")))

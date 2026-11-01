@@ -18,8 +18,6 @@ Validated on 31 October 2026, R 4.5.1, macOS arm64.
   agree with the archived output.
 - Accelerated q=2/q=4 gauges match the public aersn linear-program gauge
   within 1e-6. Affine invariance passes the same tolerance.
-- RSMS-LDL agrees with the quadratic form from aersn_ldl_normalizer within
-  1e-8.
 - The FHFA CSV reconstructs the exact standardized panel. Recomputed observed
   paths, boundaries and alarm dates agree with the archived application.
 - Eight newly generated FHFA panels (four from each independent seed block)
