@@ -27,6 +27,7 @@ run("simulate_training.R", if (mode == "--quick") "--cached" else character())
 run("simulate_local_power.R", if (mode == "--quick") "--tables" else character())
 run("simulate_delay.R", mode)
 run("theory_table.R")
+run("compare_hac.R", if (mode == "--quick") "--cached" else character())
 run("build_tables.R")
 run("validate.R")
 writeLines(c(paste("Mode:", mode), paste("Elapsed seconds:", proc.time()[["elapsed"]] - start),

@@ -72,11 +72,12 @@ Run the summarizer only after both q=4 profiles are available.
 
 | Location | Output in results/ |
 | --- | --- |
-| Main Table 1: q=4 detection and restricted mean delay | table1_power_delay.csv; table1_rows.tex |
+| Main Table 1: q=4 detection and restricted mean delay | three_methods.csv; three_method_rows.tex (RSMS/SSMS contrasts in table1_power_delay.csv) |
 | Main Table 2: contamination, local power and delay | theory_table.tex; training_summary.csv; local_power_results.csv; delay_results.csv |
 | Main Table 3: FHFA reference and alarms | table3_fhfa.csv |
-| Figure 1: average house-price growth | fhfa_J1_cross_sectional_avg_growth.pdf |
-| Figure 2: observed monitoring paths | fhfa_aersn_paths.pdf |
+| Figure 1: cumulative detection (three methods) | three_methods.pdf |
+| Figure 2: average house-price growth | fhfa_J1_cross_sectional_avg_growth.pdf |
+| Figure 3: observed monitoring paths | fhfa_aersn_paths.pdf |
 | Online Table S1: q=4 null frequencies | tableS1_size_q4.csv |
 | Online Table S2: q=2 null frequencies | tableS2_size_q2.csv |
 | Online Table S3: q=2 oscillation | tableS3_power_delay_q2.csv |
@@ -212,3 +213,5 @@ The scripts and the full-precision result CSVs provide all reported designs.
 
 Quick mode rebuilds these tables from frozen raw draws. Full mode regenerates
 the experiments from their seeds. Source scripts stay in the repository root.
+
+compare_hac.R replays both four-coordinate profiles using the original seeds, two factor distributions and all three loading alternatives. The Bartlett bandwidth is floor(m^(1/3)); each method is separately calibrated. Use --cached after copying the reference draws to results/ to rebuild the tables and monochrome cumulative detection figure.
