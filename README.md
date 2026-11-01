@@ -1,6 +1,6 @@
 # Self-Normalized Online Monitoring of Factor-Loading Instability
 
-R replication materials for the paper by **Jiajing Sun and Yongmiao Hong**,
+R replication materials for the paper by **Jiajing Sun, Yongmiao Hong and Meiting Zhu**,
 prepared for *Econometric Theory*. This branch contains the theory experiments and corresponding replication draws. The earlier manuscript package is preserved on main at commit f200d38.
 
 The main method is affine-equivariant adjusted-range-based self-normalized
