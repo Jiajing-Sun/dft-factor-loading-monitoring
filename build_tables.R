@@ -77,3 +77,35 @@ fhfa <- read.csv("fhfa_aersn_results.csv")
 fhfa$method[fhfa$method == "AERSN"] <- "RSMS"
 write.csv(fhfa, "table3_fhfa.csv", row.names = FALSE)
 cat("Built main Tables 1 and 3 and online Tables S1-S5 from stored draws.\n")
+
+# CvM uses the same first-alarm definitions and censoring horizon as main Table 1.
+cvm_rows <- list()
+for (id in 1:2) {
+    draw <- readRDS(sprintf("cvm_q4_%d.rds", id))
+    for (factor in names(draw$cells)) {
+        cell <- draw$cells[[factor]]
+        # Recheck the stored integral thresholds against their own null sample.
+        q95 <- function(x) apply(x, 1, quantile, .95, type=8, names=FALSE)
+        stopifnot(isTRUE(all.equal(cell$critical,
+            cbind(fitted=q95(draw$reference), adjusted=q95(cell$terminal_null)))))
+        for (method in dimnames(cell$stops)[[3]]) {
+            st <- cell$stops[,,method,]
+            time <- st[,"oscillation","adjusted"]
+            hit <- is.finite(time) & time > 60
+            cvm_rows[[length(cvm_rows)+1L]] <- data.frame(
+                profile=profile_names[id],factor,method,
+                fitted_size=100*mean(is.finite(st[,"null","fitted"])),
+                adjusted_size=100*mean(is.finite(st[,"null","adjusted"])),
+                adjusted_power=100*mean(hit),ADD=mean(time[hit]-60),
+                restricted=mean(pmin(time[time>60]-60,181)))
+        }
+    }
+}
+cvm <- do.call(rbind,cvm_rows)
+write.csv(cvm,"cvm_q4_summary.csv",row.names=FALSE)
+cvm_lines <- with(cvm,sprintf("%s & %s & %s & %.2f & %.2f & %.2f & %.1f & %.1f %s",
+    profile,factor,method,fitted_size,adjusted_size,adjusted_power,ADD,restricted,"\\\\"))
+writeLines(c("\\begin{tabular}{lllrrrrr}\\toprule",
+    "Profile & Factor & Method & \\multicolumn{2}{c}{Size (\\%)} & Adjusted & \\multicolumn{2}{c}{Delay} \\\\",
+    " & & & Fitted & Adj. & power (\\%) & ADD & Restricted \\\\\\midrule",
+    cvm_lines,"\\bottomrule\\end{tabular}"),"cvm_table.tex")

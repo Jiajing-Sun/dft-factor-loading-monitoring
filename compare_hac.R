@@ -15,7 +15,7 @@ hac <- function(psi, m) {
   Z <- apply(x[-(1:m),],2,cumsum)/sqrt(m)/(1+seq_len(nrow(x)-m)/m)
   rowSums((Z %*% solve(V+diag(1e-10,ncol(V))))*Z)
 }
-run_profile <- function(id, q) {
+run_profile <- function(id, q, cvm = FALSE) {
 m <- 120L
 N <- 40L
 T <- 2L
@@ -67,6 +67,12 @@ scores <- function(X, pc) {
 }
 
 
+  # Reuse the exact Table 1 panel generator, seed streams and Bartlett path.
+  if (cvm) {
+    stopifnot(q == 4L, id %in% 1:2)
+    source(file.path(ROOT, "cvm_draws.R"), local=TRUE)
+    return(invisible(NULL))
+  }
   if (q == 2) seeds <- seeds - 100000L
   # Use the original dimension-specific seed streams so HAC sees the same panels as RSMS and SSMS.
   set.seed(seeds["reference"])
@@ -98,6 +104,11 @@ scores <- function(X, pc) {
   saveRDS(list(cal=cal,cells=saved),file.path(out,sprintf("hac_q%d_%d.rds",q,id)))
 }
 if (!cached) {
+  cvm_id <- grep("^--cvm-id=", commandArgs(TRUE), value=TRUE)
+  if (length(cvm_id)) {
+    run_profile(as.integer(sub("--cvm-id=", "", cvm_id)), 4, cvm=TRUE)
+    quit(status=0)
+  }
   ids <- grep("^--q2-id=", commandArgs(TRUE), value=TRUE)
   if (length(ids)) {
     run_profile(as.integer(sub("--q2-id=", "", ids)), 2)

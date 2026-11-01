@@ -28,7 +28,10 @@ run("simulate_local_power.R", if (mode == "--quick") "--tables" else character()
 run("simulate_delay.R", mode)
 run("theory_table.R")
 run("compare_hac.R", if (mode == "--quick") "--cached" else character())
-if (mode == "--full") run("serial_panels.R")
+if (mode == "--full") {
+    for (id in 1:2) run("compare_hac.R", paste0("--cvm-id=",id))
+    run("serial_panels.R")
+}
 run("serial_summary.R")
 run("appendix_comparisons.R")
 run("figure_bandwidth.R")
