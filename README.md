@@ -62,8 +62,9 @@ All R scripts are at the top level. There are three single-level folders:
 | simulate_local_power.R | Local Gaussian score law and fixed-alternative consistency with fitted PCA |
 | simulate_delay.R | Jump and linear onset against the conditional Gaussian exit law |
 | theory_table.R | Assemble the three experiments into main Table 2 |
-| compare_hac.R | Replay the Bartlett HAC benchmark on the q=4 panels and draw cumulative detection curves |
+| compare_hac.R | Replay the Bartlett HAC benchmark on the q=2 and q=4 panels and draw cumulative detection curves |
 | serial_panels.R | Fit PCA and record first alarms for 15 variance-profile and serial-dependence designs |
+| appendix_comparisons.R | Generate appendix_independent.csv, appendix_serial.csv and the complete appendix tables from panel stopping times and maxima |
 | serial_summary.R | Estimate power and delay, with paired bootstrap intervals for power differences |
 | figure_bandwidth.R | Draw the monochrome power and delay panels for the front-cycle oscillating design |
 

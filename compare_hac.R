@@ -1,4 +1,4 @@
-# Replay the q=4 study on its original PCA panel streams. All three methods
+# Replay the q=2 and q=4 studies on its original PCA panel streams. All three methods
 # use the same observations. HAC follows the original Bartlett implementation.
 source("setup.R")
 out <- OUTPUT
@@ -15,21 +15,20 @@ hac <- function(psi, m) {
   Z <- apply(x[-(1:m),],2,cumsum)/sqrt(m)/(1+seq_len(nrow(x)-m)/m)
   rowSums((Z %*% solve(V+diag(1e-10,ncol(V))))*Z)
 }
-run_profile <- function(id) {
+run_profile <- function(id, q) {
 m <- 120L
 N <- 40L
 T <- 2L
 n <- 360L
 k0 <- 60L
 M <- 180L
-B <- 2000L
-C <- 4000L
+B <- if (q == 2) 3000L else 2000L
+C <- if (q == 2) 8000L else 4000L
 delta <- 0.12
 rr <- (1:n)/m
-v <- if (id == 1L) rep(1, n) else 1 + 0.65 * sin(2 * pi * rr)
+v <- switch(id, rep(1, n), 1 + 0.65 * sin(2 * pi * rr), 1 - 0.65 * sin(2 * pi * rr), exp(.35*(rr-.5)), exp(-.35*(rr-.5)))
 v <- v/mean(v[1:m])
-profile_name <- c("flat", "front_cycle")[id]
-H <- do.call(cbind, lapply(1:2, function(j) cbind(cos(2 * pi * j * rr), sin(2 * pi * j *
+H <- do.call(cbind, lapply(seq_len(q/2), function(j) cbind(cos(2 * pi * j * rr), sin(2 * pi * j *
     rr))))
 L <- sin(2 * pi * (1:N)/N) + 0.5
 U <- L/sqrt(sum(L^2))
@@ -38,6 +37,15 @@ a <- a/sqrt(mean(a^2))
 d <- 1:M
 rawg <- cbind(oscillation = cos(2 * pi * (m + k0 + d)/m), reversal = ifelse(d <= 90, 1, -1),
     pulse = as.numeric(d <= 45))
+# The q=2 study also includes a step, a ramp and a change orthogonal to both
+# the baseline loadings and the cross-sectional averaging direction.
+if (q == 2) {
+    rawg <- cbind(rawg, step = 1, ramp = d/M, cancellation = 1)
+    basis <- cbind(L, rep(1,N))
+    cc <- cos(4*pi*(1:N)/N)
+    cc <- drop(cc - basis %*% solve(crossprod(basis), crossprod(basis,cc)))
+    cc <- cc/sqrt(mean(cc^2))
+}
 g <- sweep(rawg, 2, sqrt(colMeans(rawg^2)), "/")
 stopifnot(max(abs(colSums(g^2) - M)) < 1e-10, abs(sum(L * a)) < 1e-10, abs(sum(a^2) - N) <
     1e-10)
@@ -59,7 +67,8 @@ scores <- function(X, pc) {
 }
 
 
-  # Use the original q=4 seed streams so HAC sees the same panels as RSMS and SSMS.
+  if (q == 2) seeds <- seeds - 100000L
+  # Use the original dimension-specific seed streams so HAC sees the same panels as RSMS and SSMS.
   set.seed(seeds["reference"])
   cal <- replicate(C, {z <- v*rnorm(n); max(hac(H*(z-v*sum(z[1:m])/sum(v[1:m])),m))})
   saved <- list()
@@ -67,13 +76,18 @@ scores <- function(X, pc) {
     set.seed(seeds[paste0(dgp,"_null")])
     nul <- replicate(B,{ X<-panel(dgp)$X; max(hac(scores(X,fit(X)),m)) })
     cuts <- c(quantile(cal,.95,type=8),quantile(nul,.95,type=8))
-    raw <- array(Inf,c(B,4,2),dimnames=list(NULL,c("null",colnames(g)),c("known_profile","size_adjusted")))
+    raw <- array(Inf,c(B,1+ncol(g),2),dimnames=list(NULL,c("null",colnames(g)),c("known_profile","size_adjusted")))
     set.seed(seeds[paste0(dgp,"_eval")])
     for(i in seq_len(B)){
       dat <- panel(dgp); pc <- fit(dat$X)
-      for(j in seq_len(4)){
+      for(j in seq_len(1+ncol(g))){
         X <- dat$X
-        if(j>1){tt <- (m+k0+1):n; X[tt,] <- X[tt,]+delta*tcrossprod(sqrt(v[tt])*dat$f[tt]*g[,j-1],a)}
+        if (j > 1) {
+          tt <- (m+k0+1):n
+          direction <- if (colnames(g)[j-1] == "cancellation") cc else a
+          shock <- sqrt(v[tt]) * dat$f[tt] * g[,j-1]
+          X[tt,] <- X[tt,] + delta * tcrossprod(shock, direction)
+        }
         path <- hac(scores(X,pc),m)
         for(k in 1:2){hit<-which(path>cuts[k]);if(length(hit)) raw[i,j,k]<-hit[1]}
       }
@@ -81,9 +95,17 @@ scores <- function(X, pc) {
     # Save first alarms and null maxima so the quick run can reconstruct each comparison.
     saved[[dgp]] <- list(raw=raw,nullcal=nul,critical=cuts)
   }
-  saveRDS(list(cal=cal,cells=saved),file.path(out,paste0("hac_q4_",id,".rds")))
+  saveRDS(list(cal=cal,cells=saved),file.path(out,sprintf("hac_q%d_%d.rds",q,id)))
 }
-if(!cached) for(id in 1:2) run_profile(id)
+if (!cached) {
+  ids <- grep("^--q2-id=", commandArgs(TRUE), value=TRUE)
+  if (length(ids)) {
+    run_profile(as.integer(sub("--q2-id=", "", ids)), 2)
+    quit(status=0)
+  }
+  for (id in 1:5) run_profile(id, 2)
+  for (id in 1:2) run_profile(id, 4)
+}
 # Form summary rows from first stopping times; early alarms are never detections.
 rows <- list()
 pdf(file.path(out,"three_methods.pdf"),width=7,height=5.4)
