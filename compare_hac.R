@@ -59,6 +59,7 @@ scores <- function(X, pc) {
 }
 
 
+  # Use the original q=4 seed streams so HAC sees the same panels as RSMS and SSMS.
   set.seed(seeds["reference"])
   cal <- replicate(C, {z <- v*rnorm(n); max(hac(H*(z-v*sum(z[1:m])/sum(v[1:m])),m))})
   saved <- list()
@@ -77,6 +78,7 @@ scores <- function(X, pc) {
         for(k in 1:2){hit<-which(path>cuts[k]);if(length(hit)) raw[i,j,k]<-hit[1]}
       }
     }
+    # Save first alarms and null maxima so the quick run can reconstruct each comparison.
     saved[[dgp]] <- list(raw=raw,nullcal=nul,critical=cuts)
   }
   saveRDS(list(cal=cal,cells=saved),file.path(out,paste0("hac_q4_",id,".rds")))

@@ -19,6 +19,7 @@ one<-function(id){
       size=100*mean(nul>x$cut[k]),iid_cut_size=100*mean(nul>base[k]),power=100*mean(hit),
       early=100*mean(t<=60),median_delay=median(t[hit]-60),restricted_delay=mean(pmin(t[t>60]-60,181)))
  }
+ # Post-break power counts a crossing only if no pre-break threshold was exceeded.
  rates<-function(ii,cv) {
   p<-vapply(1:6,function(k)colMeans(x$pre[ii,k,2:4]<=cv[k]&x$post[ii,k,2:4]>cv[k]),numeric(3))
   c(p[,1]-p[,4],p[,1]-p[,2],p[,3]-p[,6])*100

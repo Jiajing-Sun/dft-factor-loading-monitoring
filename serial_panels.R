@@ -26,6 +26,7 @@ run<-function(id){
    xp<-drop(X%*%u);xb<-rowMeans(X)
    scores<-function(amp){p<-xp+amp*sum(a*u);H*(p/sqrt(ev)*(xb+amp*mean(a)-p*mean(u)))}
    psi<-scores(0); tr<-psi[1:m,]; mu<-colMeans(tr)
+# The training geometry is fitted once per panel and reused for every change shape.
    G<-aersn::aersn_path(tr)$G
    R<-solve(qr.R(qr(G)));GG<-G%*%R
    V<-GG[unique(as.vector(geometry::convhulln(GG))),,drop=FALSE]
@@ -33,6 +34,7 @@ run<-function(id){
    facets<-geometry::convhulln(unique(V[ij$i,]-V[ij$j,]),options="Qt",output.options="n")$normals
    A<-R%*%t(facets[,1:4]/(-facets[,5]))
    W<-sweep(tr,2,mu);base<-crossprod(W)/m
+   # Bartlett bandwidth h gives positive weights to lags 1 through h-1.
    covs<-lapply(1:15,function(l){x<-crossprod(W[(l+1):m,],W[1:(m-l),])/m;x+t(x)})
    inv<-c(list(solve(crossprod(G)/m)),lapply(hs,function(h){
      S<-base;for(l in seq_len(h-1L))S<-S+(1-l/h)*covs[[l]]
@@ -49,6 +51,7 @@ run<-function(id){
    for(j in 1:3)out[,,j+1]<-path(scores(.12*sqrt(v)*f*g[,j]))
    out
  }
+ # Calibrate on null panels before drawing the independent evaluation sample.
  set.seed(813000+id);cal<-t(replicate(C,draw(FALSE)));cuts<-apply(cal,2,quantile,.95,type=8)
  stops<-array(Inf,c(B,6,4));pre<-post<-array(0,c(B,6,4))
  set.seed(913000+id)

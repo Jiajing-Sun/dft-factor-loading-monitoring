@@ -1,7 +1,7 @@
 # Self-Normalized Online Monitoring of Factor-Loading Instability
 
 R replication materials for the paper by **Jiajing Sun, Yongmiao Hong and Meiting Zhu**,
-prepared for *Econometric Theory*. This branch contains the theory experiments and corresponding replication draws. The earlier manuscript package is preserved on main at commit f200d38.
+prepared for *Econometric Theory*. The entry point is run_all.R. This edition includes the three-method comparison, training contamination, local power, detection delay and bandwidth sensitivity.
 
 The main method is affine-equivariant adjusted-range-based self-normalized
 monitoring (RSMS-AE, called RSMS in the main text). RSMS-LDL is the
@@ -62,6 +62,10 @@ All R scripts are at the top level. There are three single-level folders:
 | simulate_local_power.R | Local Gaussian score law and fixed-alternative consistency with fitted PCA |
 | simulate_delay.R | Jump and linear onset against the conditional Gaussian exit law |
 | theory_table.R | Assemble the three experiments into main Table 2 |
+| compare_hac.R | Replay the Bartlett HAC benchmark on the q=4 panels and draw cumulative detection curves |
+| serial_panels.R | Fit PCA and record first alarms for 15 variance-profile and serial-dependence designs |
+| serial_summary.R | Estimate power and delay, with paired bootstrap intervals for power differences |
+| figure_bandwidth.R | Draw the monochrome power and delay panels for the front-cycle oscillating design |
 
 Each script contains remarks explaining its statistical and computational
 steps. Individual study commands, run from the root, are e.g.
@@ -84,6 +88,8 @@ Run the summarizer only after both q=4 profiles are available.
 | Online Table S3: q=2 oscillation | tableS3_power_delay_q2.csv |
 | Online Table S4: q=4 early alarms/delays | tableS4_early_delays_q4.csv |
 | Online Table S5: pulse and reversal | tableS5_other_shapes_q4.csv |
+| Online Table S6: paired RSMS–SSMS estimates and intervals | table1_power_delay.csv; profile_confirm_bootstrap_pairs.csv |
+| Online Table S7: pulse and reversal, three methods | three_methods.csv; three_shape_rows.tex |
 
 The CSVs retain full precision. Main Table 1 rounds percentages to two decimals
 and delays to one. PDF metadata and plot styling may differ between platforms;
@@ -100,7 +106,7 @@ and the loading-change scale is 0.12.
 
 The q=2 study uses 8,000 Gaussian references and 3,000 panels for each independent
 null-calibration/evaluation sample. The q=4 study uses 4,000 references and
-2,000 panels per sample. Both methods share each panel. Critical values use
+2,000 panels per sample. The methods share each panel. Critical values use
 R quantile type 8 at 0.95. The known-profile reference uses the specified
 full-horizon profile and the fitted-score correction. Size-adjusted power uses
 an independent null sample from the same DGP.
@@ -215,6 +221,12 @@ The scripts and the full-precision result CSVs provide all reported designs.
 Quick mode rebuilds these tables from frozen raw draws. Full mode regenerates
 the experiments from their seeds. Source scripts stay in the repository root.
 
-compare_hac.R replays both four-coordinate profiles using the original seeds, two factor distributions and all three loading alternatives. The Bartlett bandwidth is floor(m^(1/3)); each method is separately calibrated. Use --cached after copying the reference draws to results/ to rebuild the tables and monochrome cumulative detection figure.
-
-serial_panels.R generates the 15 Gaussian profile/dependence cells. serial_summary.R rebuilds power, delay and paired intervals from archived maxima and stopping times. figure_bandwidth.R plots the front-cycle oscillating design at rho=0.5. Bandwidths are 2, 4, 8 and 16. The calibration and evaluation samples are independent (2,000 and 1,500 panels per cell).
+For Figure 2, each row of the simulation grid combines one of the five variance
+profiles with an AR(1) coefficient of 0, 0.5 or 0.85. The factor and errors are
+independent stationary Gaussian AR(1) processes before variance scaling. Each
+method and Bartlett bandwidth (2, 4, 8 or 16) uses a separate critical value
+estimated from 2,000 null panels. The 1,500 evaluation panels are independent
+of calibration and paired across methods and alternatives. For grid row i,
+the calibration and evaluation seeds are 813000+i and 913000+i. Figure 2
+uses the front-cycle oscillating design at 0.5. The complete grid is in
+results/all_results.csv and results/paired_power_intervals.csv.
