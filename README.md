@@ -67,7 +67,7 @@ All R scripts are at the top level. There are three single-level folders:
 | appendix_comparisons.R | Generate appendix_independent.csv, appendix_serial.csv and the complete appendix tables from panel stopping times and maxima |
 | serial_summary.R | Estimate power and delay, with paired bootstrap intervals for power differences |
 | kernel_draws.R, kernel_summary.R | Compare Bartlett and Parzen HAC on the Figure 2 panels for both rules; bootstrap paired power contrasts across all bandwidths |
-| figure_bandwidth.R | Draw the monochrome power and delay panels for the front-cycle oscillating design |
+| figure_bandwidth.R | Plot KS and CvM power for Bartlett HAC, Parzen HAC and RSMS using the Table S31 results |
 
 Each script contains remarks explaining its statistical and computational
 steps. Individual study commands, run from the root, are e.g.
@@ -224,12 +224,12 @@ The scripts and the full-precision result CSVs provide all reported designs.
 Quick mode rebuilds these tables from frozen raw draws. Full mode regenerates
 the experiments from their seeds. Source scripts stay in the repository root.
 
-For Figure 2, each row of the simulation grid combines one of the five variance
+In the serial-dependence study, each row of the simulation grid combines one of the five variance
 profiles with an AR(1) coefficient of 0, 0.5 or 0.85. The factor and errors are
 independent stationary Gaussian AR(1) processes before variance scaling. Each
 method and Bartlett bandwidth (2, 4, 8 or 16) uses a separate critical value
 estimated from 2,000 null panels. The 1,500 evaluation panels are independent
 of calibration and paired across methods and alternatives. For grid row i,
 the calibration and evaluation seeds are 813000+i and 913000+i. Figure 2
-uses the front-cycle oscillating design at 0.5. The complete grid is in
+uses KS and CvM power from results/kernel_comparison.csv for the front-cycle oscillating design at 0.5. The complete grid is in
 results/all_results.csv and results/paired_power_intervals.csv.
