@@ -5,7 +5,9 @@ bandwidth <- c(2, 4, 8, 16)
 kernels <- c("Bartlett", "Parzen")
 rules <- c("KS", "CvM")
 
-pdf(file.path(OUTPUT, "front_cycle_bandwidth.pdf"), width=7.2, height=3.65,
+review <- "--review" %in% commandArgs(TRUE)
+filename <- if (review) "front_cycle_bandwidth_review.pdf" else "front_cycle_bandwidth.pdf"
+pdf(file.path(OUTPUT, filename), width=7.2, height=3.65,
     useDingbats=FALSE, title="Size-adjusted power by HAC bandwidth")
 layout(matrix(c(1,2,3,3), 2, byrow=TRUE), heights=c(8.4,1))
 par(mar=c(3.2,3.6,1.9,0.65), mgp=c(2.1,.55,0), tcl=-.25)
@@ -15,8 +17,9 @@ for (rule in rules) {
     stopifnot(!anyDuplicated(d$method))
     # Powers of two are evenly spaced on the log-bandwidth axis in both panels.
     plot(bandwidth, rep(NA_real_,4), type="n", log="x", xaxt="n", yaxt="n",
-         ylim=c(34,66), xlab="HAC bandwidth", ylab="Size-adjusted power (%)",
+         ylim=c(34,66), xlab="", ylab="Size-adjusted power (%)",
          main=paste(if (rule=="KS") "(a)" else "(b)",rule), bty="l", las=1)
+    title(xlab="HAC bandwidth h (in lags)", col.lab=if (review) "#8B0000" else "black")
     axis(1, at=bandwidth, labels=bandwidth)
     axis(2, at=seq(35,65,5), las=1)
     level <- power[["RSMS"]]
