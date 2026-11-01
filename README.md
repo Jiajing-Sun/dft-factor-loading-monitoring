@@ -76,7 +76,7 @@ Run the summarizer only after both q=4 profiles are available.
 
 | Location | Output in results/ |
 | --- | --- |
-| Main Table 1: q=4 detection and restricted mean delay | three_methods.csv; three_method_rows.tex (RSMS/SSMS contrasts in table1_power_delay.csv) |
+| Main Table 1: q=4 KS size, fitted and size-adjusted power, and detection delays | three_methods.csv; three_method_rows.tex (RSMS/SSMS contrasts in table1_power_delay.csv) |
 | Main Table 2: contamination, local power and delay | theory_table.tex; training_summary.csv; local_power_results.csv; delay_results.csv |
 | Main Table 3: FHFA reference and alarms | table3_fhfa.csv |
 | Figure 1: cumulative detection (three methods) | three_methods.pdf |

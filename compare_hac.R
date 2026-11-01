@@ -124,9 +124,11 @@ for(id in 1:2) for(dgp in c("Gaussian","Bounded")){
     raw <- if(ix==3) hr else original[,,ix,]
     for(sc in c("oscillation","pulse","reversal")){
       st <- raw[,sc,"size_adjusted"]
+      fitted <- raw[,sc,"known_profile"]
       rows[[length(rows)+1]] <- data.frame(profile,dgp,method=met,shape=sc,
         size=100*mean(is.finite(raw[,"null","known_profile"])),adjusted_size=100*mean(is.finite(raw[,"null","size_adjusted"])),
         power=100*mean(is.finite(st)&st>60),early=100*mean(st<=60),
+        fitted_power=100*mean(is.finite(fitted)&fitted>60),ADD=mean(st[is.finite(st)&st>60]-60),
         median=median(st[is.finite(st)&st>60]-60),restricted=mean(pmin(st[st>60]-60,181)))
       if(sc=="oscillation"){
         y <- vapply(0:180,function(k)100*mean(st>60 & st<=60+k),numeric(1))
@@ -145,8 +147,8 @@ write.csv(do.call(rbind,rows),file.path(out,"three_methods.csv"),row.names=FALSE
 tab <- do.call(rbind,rows)
 osc <- subset(tab,shape=="oscillation")
 endrow <- paste0(intToUtf8(92),intToUtf8(92))
-main_rows <- sprintf("%s & %s & %s & %.2f & %.2f & %.2f & %.1f & %.1f %s",
-  osc$profile,osc$dgp,osc$method,osc$size,osc$adjusted_size,osc$power,osc$median,osc$restricted,endrow)
+main_rows <- sprintf("%s & %s & %s & %.2f & %.2f & %.2f & %.2f & %.1f & %.1f & %.1f %s",
+  osc$profile,osc$dgp,osc$method,osc$size,osc$adjusted_size,osc$fitted_power,osc$power,osc$ADD,osc$median,osc$restricted,endrow)
 writeLines(main_rows,file.path(out,"three_method_rows.tex"))
 more <- subset(tab,shape!="oscillation")
 appendix_rows <- character()

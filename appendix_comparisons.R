@@ -74,13 +74,15 @@ table_tex <- function(d, title, reference, by_factor) {
             "adjusted_size","power","adjusted_power")])), sprintf("%.1f", unlist(d[i,c("ADD","restricted")])))
         rows[i] <- paste(paste(values, collapse=" & "), end)
     }
+    calibration <- if (by_factor) "Fitted uses the Gaussian reference." else "Indep. uses the cutoff at $\\rho=0$."
+    note <- paste("Entries use the KS rule. ", calibration, " Adj. uses a matched panel null. ADD averages post-break detections. Restricted delay assigns 181 to a miss among survivors.", sep="")
     c("\\begin{table}[!htbp]\\centering\\color{revisionred}",
       paste0("\\caption{",title,"}"), "\\begingroup\\fontsize{9.5}{11}\\selectfont\\setstretch{1.0}",
       "\\setlength{\\tabcolsep}{3pt}",
       paste0("\\begin{tabular}{",if(by_factor) "l" else "", "llrrrrrr}\\toprule"),
       paste0(header,"Change & Method & \\multicolumn{2}{c}{Size (\\%)} & \\multicolumn{2}{c}{Power (\\%)} & \\multicolumn{2}{c}{Adjusted delay} ",end),
       paste0(if(by_factor) "& " else "", "& & ",reference," & Adj. & ",reference," & Adj. & ADD & Restricted ",end,"\\midrule"),
-      rows, "\\bottomrule\\end{tabular}\\endgroup\\end{table}")
+      rows, "\\bottomrule\\end{tabular}", paste0("\\tabnote{",note,"}"), "\\endgroup\\end{table}")
 }
 
 pages <- character()
