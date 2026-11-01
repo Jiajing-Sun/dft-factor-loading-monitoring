@@ -1,7 +1,7 @@
 # Self-Normalized Online Monitoring of Factor-Loading Instability
 
-R replication materials for the paper by **Jiajing Sun, Yongmiao Hong and Meiting Zhu**,
-prepared for *Econometric Theory*. The entry point is run_all.R. This edition includes the three-method comparison, training contamination, local power, detection delay and bandwidth sensitivity.
+R replication materials for the paper by **Jiajing Sun, Yongmiao Hong and Meiting Zhu**.
+The entry point is run_all.R. The experiments cover the three-method comparison, training contamination, local power, detection delay and bandwidth sensitivity.
 
 The main method is affine-equivariant adjusted-range-based self-normalized
 monitoring (RSMS-AE, called RSMS in the main text). RSMS-LDL is the
