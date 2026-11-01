@@ -72,8 +72,8 @@ other <- rows(1:2, function(i, d) do.call(rbind, lapply(c("pulse", "reversal"), 
     x
 })))
 write.csv(other, "tableS5_other_shapes_q4.csv", row.names = FALSE)
-# Main Table 2 is the fitted-reference FHFA summary, read after its re-evaluation.
+# Main Table 3 is the fitted-reference FHFA summary, read after its re-evaluation.
 fhfa <- read.csv("fhfa_aersn_results.csv")
 fhfa$method[fhfa$method == "AERSN"] <- "RSMS"
-write.csv(fhfa, "table2_fhfa.csv", row.names = FALSE)
-cat("Built main Tables 1-2 and online Tables S1-S5 from stored draws.\n")
+write.csv(fhfa, "table3_fhfa.csv", row.names = FALSE)
+cat("Built main Tables 1 and 3 and online Tables S1-S5 from stored draws.\n")

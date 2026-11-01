@@ -1,7 +1,7 @@
 # Self-Normalized Online Monitoring of Factor-Loading Instability
 
 R replication materials for the paper by **Jiajing Sun and Yongmiao Hong**,
-prepared for *The Econometrics Journal*.
+prepared for *Econometric Theory*. This branch contains the theory experiments and corresponding replication draws. The earlier manuscript package is preserved on main at commit f200d38.
 
 The main method is affine-equivariant adjusted-range-based self-normalized
 monitoring (RSMS-AE, called RSMS in the main text). RSMS-LDL is the
@@ -58,6 +58,10 @@ All R scripts are at the top level. There are three single-level folders:
 | fhfa_aersn_revision.R | FHFA calibration, independent evaluation and figures |
 | build_tables.R | Turn stopping times into manuscript tables |
 | validate.R | Gauge equivalence, affine invariance and saved-result comparisons |
+| simulate_training.R | Sparse and diffuse training contamination, with flat and front-cycle variance profiles |
+| simulate_local_power.R | Local Gaussian score law and fixed-alternative consistency with fitted PCA |
+| simulate_delay.R | Jump and linear onset against the conditional Gaussian exit law |
+| theory_table.R | Assemble the three experiments into main Table 2 |
 
 Each script contains remarks explaining its statistical and computational
 steps. Individual study commands, run from the root, are e.g.
@@ -69,7 +73,8 @@ Run the summarizer only after both q=4 profiles are available.
 | Location | Output in results/ |
 | --- | --- |
 | Main Table 1: q=4 detection and restricted mean delay | table1_power_delay.csv; table1_rows.tex |
-| Main Table 2: FHFA reference and alarms | table2_fhfa.csv |
+| Main Table 2: contamination, local power and delay | theory_table.tex; training_summary.csv; local_power_results.csv; delay_results.csv |
+| Main Table 3: FHFA reference and alarms | table3_fhfa.csv |
 | Figure 1: average house-price growth | fhfa_J1_cross_sectional_avg_growth.pdf |
 | Figure 2: observed monitoring paths | fhfa_aersn_paths.pdf |
 | Online Table S1: q=4 null frequencies | tableS1_size_q4.csv |
@@ -169,3 +174,41 @@ Papers in Economics 2678; Janeway Institute Working Paper 2637.
 https://www.janeway.econ.cam.ac.uk/publication/affine-equivariant-adjusted-range-self-normalization
 
 Package: https://cran.r-project.org/package=aersn
+
+## Theory experiments in Table 2
+
+All three studies use one factor, one Fourier pair, T=2, gamma=0 and a
+5% KS critical value. An independent Gaussian calibration sample sets the
+reference threshold in each study. Each finite panel re-estimates its
+training PCA. The experiments answer three different probability questions.
+
+- In panel A all monitoring observations are from the baseline regime.
+  The Gaussian N=40 loading design changes on evenly spaced training dates.
+  The training lengths are 100, 400 and 1600; the dispersed and concentrated
+  alternatives have identical projected first-order training dose. A separate
+  m=1600 experiment uses the front-cycle profile for both panel generation
+  and Gaussian reference calibration. The CSV includes 999-draw paired
+  bootstrap intervals that resample calibration and evaluation separately.
+- Panel B uses the N=12 Gaussian loading design, m=80,240,720 and a unit-RMS
+  oscillation after monitoring date m/2. The local amplitudes are h/sqrt(m)
+  for h=0.7,1.6 and the fixed amplitude is 0.13. The CSV distinguishes any
+  alarm, early alarms, first alarm after the break and detection among
+  survivors. Both A and B use 4000 calibration and 2000 independent
+  evaluation draws for panels and Gaussian references.
+- Panel C uses the two-series Gaussian model defined in the manuscript.
+  For each m=128,512,2048,8192 the same draws give a jump and a linear onset
+  with amplitude 2. Delay is scaled by m*(sqrt(m)*2)^(-1/(nu+1)), with nu
+  equal to zero or one. Early alarms are removed before summarizing delay,
+  and survivors with a miss contribute positive infinity. The reference
+  uses 6000 critical-value draws and 4000 separate exit draws on grid 4096.
+  The order-statistic intervals for medians condition on the critical values.
+
+Seed offsets for A are 840000 (calibration), 850000 (Gaussian evaluation),
+860000 (panel evaluation) and 870000 (bootstrap), plus m and a further 50000
+for the front-cycle profile. For B the three seeds are 453000+m, 463000+m
+and 473000+m. For C each draw i uses 640000+i (calibration), 650000+i (exit)
+or 660000+10000*j+i (panel, with j indexing the four sample sizes).
+The scripts and the full-precision result CSVs provide all reported designs.
+
+Quick mode rebuilds these tables from frozen raw draws. Full mode regenerates
+the experiments from their seeds. Source scripts stay in the repository root.

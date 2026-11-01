@@ -33,3 +33,13 @@ The remaining simulation profiles and the full 3,000-panel FHFA reference
 are supplied as archived draws; run_all.R --full regenerates them.
 Cross-platform numerical comparisons use tolerances; PDF metadata need not
 be byte-identical.
+
+## Econometric Theory update, 1 November 2026
+
+All newly reported training-contamination, local-power and delay panels were
+generated from new random draws. Each study retains the independent
+critical-value draws and evaluation maxima or stopping times. The full
+delay run was repeated, reproducing all simulated draws and stopping times.
+The ET quick workflow rebuilds Table 2 from the saved draws alongside the
+existing simulation and FHFA tables. Validation of the earlier numerical
+studies is recorded above.
