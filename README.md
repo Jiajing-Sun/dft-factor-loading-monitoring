@@ -66,6 +66,7 @@ All R scripts are at the top level. There are three single-level folders:
 | cvm_draws.R | Replay the Table 1 panels for unit-weight CvM and verify the matching KS paths against the archived maxima and first alarms |
 | appendix_comparisons.R | Generate appendix_independent.csv, appendix_serial.csv and the complete appendix tables from panel stopping times and maxima |
 | serial_summary.R | Estimate power and delay, with paired bootstrap intervals for power differences |
+| kernel_draws.R, kernel_summary.R | Compare Bartlett and Parzen HAC on the Figure 2 panels for both rules; bootstrap paired power contrasts across all bandwidths |
 | figure_bandwidth.R | Draw the monochrome power and delay panels for the front-cycle oscillating design |
 
 Each script contains remarks explaining its statistical and computational
@@ -78,6 +79,7 @@ Run the summarizer only after both q=4 profiles are available.
 | Location | Output in results/ |
 | --- | --- |
 | Main Table 1: q=4 KS size, fitted and size-adjusted power, and detection delays | three_methods.csv; three_method_rows.tex (RSMS/SSMS contrasts in table1_power_delay.csv) |
+| Online Table S31: four-dimensional front-cycle oscillation, Gaussian AR(1) with coefficient 0.5 | kernel_comparison.csv; kernel_paired_power.csv; kernel_table.tex |
 | Online Table S30: four-dimensional CvM size, adjusted power and delays | cvm_q4_summary.csv; cvm_table.tex |
 | Main Table 2: contamination, local power and delay | theory_table.tex; training_summary.csv; local_power_results.csv; delay_results.csv |
 | Main Table 3: FHFA reference and alarms | table3_fhfa.csv |

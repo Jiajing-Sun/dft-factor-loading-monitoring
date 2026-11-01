@@ -13,7 +13,7 @@ d<-1:180; g<-cbind(oscillation=cos(2*pi*(m+k0+d)/m),pulse=as.numeric(d<=45),reve
 g<-rbind(matrix(0,m+k0,3),sweep(g,2,sqrt(colMeans(g^2)),"/"))
 profiles<-c("flat","front","back","rising","falling")
 grid<-expand.grid(profile=profiles,rho=c(0,.5,.85),stringsAsFactors=FALSE)
-run<-function(id){
+run<-function(id,kernel_study=FALSE){
  profile<-grid$profile[id];rho<-grid$rho[id]
  v<-switch(profile,flat=rep(1,n),front=1+.65*sin(2*pi*rr),back=1-.65*sin(2*pi*rr),rising=exp(.35*(rr-.5)),falling=exp(-.35*(rr-.5)))
  v<-v/mean(v[1:m])
@@ -40,18 +40,36 @@ run<-function(id){
      S<-base;for(l in seq_len(h-1L))S<-S+(1-l/h)*covs[[l]]
      solve(S+diag(1e-10,4))
    }))
+   if (kernel_study) {
+     # Match support at each bandwidth: both kernels use lags 1 through h-1.
+     parzen <- lapply(hs,function(h) {
+       S <- base
+       weights <- sandwich::kweights(seq_len(h-1L)/h,kernel="Parzen")
+       for (lag in seq_along(weights)) S <- S + weights[lag]*covs[[lag]]
+       solve(S+diag(1e-10,4))
+     })
+     inv <- c(inv,parzen)
+   }
    path<-function(s){
      Z<-apply(sweep(s[-(1:m),],2,mu),2,cumsum)/sqrt(m)/(1+(1:(n-m))/m)
      cbind(apply(Z%*%A,1,max)^2,vapply(inv,function(V)rowSums((Z%*%V)*Z),numeric(n-m)))
    }
    null<-path(psi)
    if(check)stopifnot(max(abs(null[,1:2]-seqstats(psi,m,TRUE)))<1e-5)
+   if (kernel_study) {
+     if (!alternatives) return(cbind(KS=apply(null,2,max),CvM=colSums(null)/m))
+     return(list(null=null,oscillation=path(scores(.12*sqrt(v)*f*g[,"oscillation"]))))
+   }
    if(!alternatives)return(apply(null,2,max))
    out<-array(0,c(n-m,6,4));out[,,1]<-null
    for(j in 1:3)out[,,j+1]<-path(scores(.12*sqrt(v)*f*g[,j]))
    out
  }
  # Calibrate on null panels before drawing the independent evaluation sample.
+ if (kernel_study) {
+   source(file.path(ROOT,"kernel_draws.R"),local=TRUE)
+   return(id)
+ }
  set.seed(813000+id);cal<-t(replicate(C,draw(FALSE)));cuts<-apply(cal,2,quantile,.95,type=8)
  stops<-array(Inf,c(B,6,4));pre<-post<-array(0,c(B,6,4))
  set.seed(913000+id)
@@ -64,6 +82,10 @@ run<-function(id){
  id
 }
 {
+if ("--kernel" %in% commandArgs(TRUE)) {
+  run(which(grid$profile=="front" & grid$rho==0.5),kernel_study=TRUE)
+  quit(status=0)
+}
 ids<-as.integer(commandArgs(TRUE))
 if(!length(ids)) ids<-seq_len(nrow(grid))
 jobs<-parallel::mclapply(ids,run,mc.cores=if(.Platform$OS.type=="windows") 1L else as.integer(Sys.getenv("DFT_CORES","7")),mc.set.seed=FALSE,mc.preschedule=FALSE)
